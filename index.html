@@ -59,7 +59,7 @@ button:active{transform:scale(.94)}button:disabled{opacity:.45;cursor:default}
 </div></div>
 <div class="wrap">
 <h1>My Amazing Life 🌟</h1>
-<p class="tri">Session 8 · Practice Pack • <b id="who"></b></p>
+<p class="tri">Session 8 · Practice Pack • <b id="who"></b> • <a href="#" onclick="reset();return false" style="color:var(--mut);font-weight:700">↻ Start over</a></p>
 <div class="bar"><i id="pb"></i></div>
 <div class="tabs" id="tabs"></div>
 <div id="panes"></div>
@@ -214,8 +214,10 @@ function send(){
  .then(function(d){if(d&&d.success){sent=true;save();$('note').textContent='✅ Your answers were sent to your teacher!';}else{$('note').textContent='⚠️ Sending failed — tap “📧 Send to my teacher” to retry, or use 📋.';}})
  .catch(function(){$('note').textContent='⚠️ No internet. Your answers are saved — tap “📧 Send to my teacher” again later.';});
 }
-function save(){try{localStorage.setItem(LSKEY,JSON.stringify({name:name,cur:cur,S:S,sent:sent}))}catch(e){}}
-function load(){try{var d=localStorage.getItem(LSKEY);if(d){var o=JSON.parse(d);if(o&&o.S)return o}}catch(e){}return null}
+function myKey(nm){return LSKEY+'_'+encodeURIComponent(nm||name)}
+function save(){try{if(name)localStorage.setItem(myKey(),JSON.stringify({name:name,cur:cur,S:S,sent:sent}))}catch(e){}}
+function loadFor(nm){try{var d=localStorage.getItem(myKey(nm));if(d){var o=JSON.parse(d);if(o&&o.S)return o}}catch(e){}return null}
+function reset(){try{for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k&&k.indexOf(LSKEY+'_')===0)localStorage.removeItem(k)}}catch(e){}location.reload()}
 function printAns(){
  var r=report();
  var w=window.open('','_blank');
@@ -223,10 +225,16 @@ function printAns(){
  w.document.write('<html><head><title>Session 8 · '+name+'</title><style>body{font-family:Arial,sans-serif;padding:24px;line-height:1.5}pre{white-space:pre-wrap;font:inherit}</style></head><body><h2>Session 8 · Practice Pack</h2><pre>'+r.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</pre></body></html>');
  w.document.close();w.focus();w.print();
 }
-$('go').onclick=function(){var v=$('nm').value.trim();if(!v){$('nmerr').textContent='✍️ Please write your name first.';return}
- name=v;$('who').textContent=v;$('start').style.display='none';build();save();go(0);prog()};
+$('go').onclick=function(){
+ var v=$('nm').value.trim();
+ if(!v){$('nmerr').textContent='✍️ Please write your name first.';return}
+ name=v;
+ var o=loadFor(v);
+ if(o){S=o.S||{};cur=(typeof o.cur==='number')?o.cur:0;sent=!!o.sent;}
+ else{S={};cur=0;sent=false}
+ $('who').textContent=v;$('start').style.display='none';build();save();go(cur);prog();
+};
 $('nm').addEventListener('keydown',function(e){if(e.key==='Enter')$('go').click()});
-(function(){var o=load();if(o){name=o.name||'';S=o.S||{};sent=!!o.sent;$('who').textContent=name;$('start').style.display='none';build();cur=(typeof o.cur==='number')?o.cur:0;go(cur);prog();}})();
 </script>
 </body>
 </html>
