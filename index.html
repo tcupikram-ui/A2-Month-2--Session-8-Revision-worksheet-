@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Session 8 · My Amazing Life</title>
+<style>
+:root{--bg:#fff7ec;--card:#fff;--ink:#27304a;--mut:#5d6785;--line:#eadfce;--ok:#14a866;--bad:#ef4458;--c:#2f7bff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171b2e;--card:#222845;--ink:#f1f3ff;--mut:#a9b2d6;--line:#363e63;--ok:#3ad68e;--bad:#ff7a87;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171b2e;--card:#222845;--ink:#f1f3ff;--mut:#a9b2d6;--line:#363e63;--ok:#3ad68e;--bad:#ff7a87;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh;overflow-x:hidden}
+.wrap{max-width:780px;margin:0 auto;padding:12px 14px 30px}
+h1{margin:6px 0;text-align:center;font-size:clamp(1.5rem,6vw,2.3rem);background:linear-gradient(90deg,#2f7bff,#ff4d5e,#ffb703);-webkit-background-clip:text;background-clip:text;color:transparent;animation:in .7s}
+.tri{text-align:center;color:var(--mut);margin:0 0 10px}
+.tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.tabs button{width:42px;height:42px;padding:0;border-radius:50%;background:var(--line);color:var(--ink);font-weight:800}
+.tabs button.on{background:var(--c);color:#fff;transform:scale(1.15)}
+.tabs button.done{box-shadow:0 0 0 3px var(--ok)}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 14px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2f7bff,#14a866);transition:width .5s}
+.pane{display:none;background:var(--card);border-radius:22px;padding:18px;border:3px solid var(--c);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.pane.on{display:block;animation:in .5s}
+@keyframes in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.pane h2{margin:0;color:var(--c)}.pane .ar{direction:rtl;text-align:right;margin:6px 0 0;font-size:1.05rem}.pane .fr{margin:4px 0 8px;color:var(--mut)}
+.tip{background:rgba(255,183,3,.18);border-radius:12px;padding:8px 12px;margin:8px 0 12px;font-size:.95rem}
+.qc{padding:12px;margin:12px 0;border:2px solid var(--line);border-radius:16px;transition:.3s}
+.qc.ok{border-color:var(--ok);background:rgba(20,168,102,.1);animation:pop .5s}
+.qc.bad{border-color:var(--bad);background:rgba(239,68,88,.1);animation:shake .5s}
+@keyframes pop{50%{transform:scale(1.03)}}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.qt{font-size:1.08rem;line-height:2}.n{display:inline-block;background:var(--c);color:#fff;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-weight:800;margin-right:6px;font-size:.9rem}
+.sub{color:var(--mut);font-size:.9rem;margin:2px 0}
+input[type=text]{font:inherit;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:9em;max-width:100%}
+input.w{width:100%;margin-top:6px}input:focus{outline:none;border-color:var(--c)}input:disabled{opacity:.85}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.opt{background:var(--bg);color:var(--ink);border:2px solid var(--line);padding:8px 16px}.opt.sel{border-color:var(--c);background:var(--c);color:#fff}
+button{font:inherit;font-weight:700;border:0;border-radius:26px;padding:10px 22px;background:var(--c);color:#fff;cursor:pointer;transition:transform .15s}
+button:active{transform:scale(.94)}button:disabled{opacity:.45;cursor:default}
+.chk{margin-top:8px;background:#ffb703;color:#27304a}
+.fb{margin-top:8px;font-weight:700}.fb .fix{display:block;margin-top:4px;color:var(--ok)}
+.fb .exp{display:block;direction:rtl;text-align:right;margin-top:6px;font-weight:600;background:rgba(255,183,3,.2);border-radius:10px;padding:6px 10px}
+.nav{display:flex;justify-content:space-between;margin-top:14px}
+#start{position:fixed;inset:0;background:var(--bg);z-index:9;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+#start div{max-width:420px;animation:in .6s}#start input{width:100%;font-size:1.2rem;text-align:center;margin:14px 0}
+.big{font-size:3rem;font-weight:900;text-align:center;margin:8px 0;animation:pop 1s}
+.row{display:flex;justify-content:space-between;padding:6px 10px;border-bottom:1px solid var(--line)}
+.acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}.acts .g{background:#14a866}.acts .m{background:#ef4458}
+.fl{position:fixed;top:-40px;font-size:1.8rem;animation:fall 3s linear forwards;pointer-events:none;z-index:5}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.sign{text-align:center;color:var(--mut);font-size:.85rem;margin-top:16px}
+</style>
+</head>
+<body>
+<div id="start"><div>
+<h1>My Amazing Life 🌟</h1>
+<p class="tri">حياتي الرائعة • Ma vie extraordinaire<br>Session 8 · Practice Pack</p>
+<p>👋 Name / الاسم / Nom</p>
+<input type="text" id="nm" placeholder="Tap here and write your name" autocomplete="off">
+<button id="go" style="background:#2f7bff">Start ▶</button>
+<p class="sub" id="nmerr"></p>
+</div></div>
+<div class="wrap">
+<h1>My Amazing Life 🌟</h1>
+<p class="tri">Session 8 · Practice Pack • <b id="who"></b></p>
+<div class="bar"><i id="pb"></i></div>
+<div class="tabs" id="tabs"></div>
+<div id="panes"></div>
+<p class="sign">Ms Ikram Boudaoud</p>
+</div>
+<script>
+var MAIL='ikram.boudaoud25@gmail.com';
+var T=[
+{id:'A',c:'#2f7bff',t:'Fill in the blanks',ar:'أ. املأ الفراغات (الحاضر التام أو الماضي البسيط)',fr:'Complète les blancs (present perfect ou past simple)',tip:'Present Perfect = no exact time · Past Simple = specific time.',q:[
+{k:'fill',q:'I ___ (visit) Paris last summer.',ok:['visited'],m:'I visited Paris last summer.'},
+{k:'fill',q:'She ___ (never / try) Korean food.',ok:['has never tried'],m:'She has never tried Korean food.'},
+{k:'fill',q:'We ___ (see) that movie three times!',ok:['have seen'],m:'We have seen that movie three times!'},
+{k:'fill',q:'He ___ (climb) a mountain in 2019.',ok:['climbed'],m:'He climbed a mountain in 2019.'},
+{k:'fill',q:'They ___ (eat) pizza yesterday.',ok:['ate'],m:'They ate pizza yesterday.'}]},
+{id:'B',c:'#ff4d5e',t:'Compare!',ar:'ب. قارن! اكتب جملة واحدة لكل كلمتين',fr:'Compare ! Écris une phrase pour chaque paire',tip:'Write one sentence with a comparative + than. Example: A lion is stronger than a cat.',q:[
+{k:'sent',q:'(elephant / mouse — big)',re:/bigger than/i,m:'An elephant is bigger than a mouse.'},
+{k:'sent',q:'(cheetah / turtle — fast)',re:/faster than/i,m:'A cheetah is faster than a turtle.'},
+{k:'sent',q:'(your school / your friend’s school — big)',re:/bigger than/i,m:'My school is bigger than my friend’s school.'},
+{k:'sent',q:'(summer / winter — hot)',re:/hotter than/i,m:'Summer is hotter than winter.'},
+{k:'sent',q:'(a car / a bicycle — expensive)',re:/more expensive than/i,m:'A car is more expensive than a bicycle.'}]},
+{id:'C',c:'#14a866',t:'Finish the opinion sentences',ar:'ج. أكمل جمل الرأي',fr:'Termine les phrases d’opinion',tip:'Fill every gap with your own ideas. Open answers: checked for completeness.',q:[
+{k:'blank',q:'I think school is ___ because ___.',m:'I think school is important because we learn new things.'},
+{k:'blank',q:'I like ___ better than ___ because ___.',m:'I like tea better than coffee because it is sweet.'},
+{k:'blank',q:'I think football is ___ because ___.',m:'I think football is exciting because it is fast.'},
+{k:'blank',q:'I prefer ___ to ___ because ___.',m:'I prefer summer to winter because it is sunny.'},
+{k:'blank',q:'I think my best friend is ___ because ___.',m:'I think my best friend is kind because she always helps me.'}]},
+{id:'D',c:'#9b5cf6',t:'Circle the correct answer',ar:'د. اختر الإجابة الصحيحة (حاضر تام أم ماضٍ بسيط؟)',fr:'Entoure la bonne réponse (present perfect ou past simple ?)',tip:'Tap your answer, then press Check.',q:[
+{k:'mc',q:'I ___ Spain three times.',o:['have visited','visited'],ok:0,m:'I have visited Spain three times.'},
+{k:'mc',q:'I ___ Spain last year.',o:['have visited','visited'],ok:1,m:'I visited Spain last year.'},
+{k:'mc',q:'She ___ never eaten sushi.',o:['has','have'],ok:0,m:'She has never eaten sushi.'},
+{k:'mc',q:'We ___ that film yesterday.',o:['saw','have seen'],ok:0,m:'We saw that film yesterday.'},
+{k:'mc',q:'___ you ever climbed a mountain?',o:['Have','Did'],ok:0,m:'Have you ever climbed a mountain?'}]},
+{id:'E',c:'#f08a00',t:'My Amazing Life: write 5 sentences',ar:'هـ. حياتي الرائعة: اكتب 5 جمل للعرض',fr:'Ma vie extraordinaire : écris 5 phrases',tip:'Write full sentences (at least 4 words). Follow the hint in each box.',q:[
+{k:'open',q:'An experience I’ve had (Present Perfect)',h:'Example: I have climbed a small mountain!',re:/\b(have|has)\b|’ve|'ve/i,min:4,m:'I have visited Paris.'},
+{k:'open',q:'When it happened (Past Simple + time)',h:'Example: I climbed it last summer.',re:/\b(last|yesterday|ago|in|on|at)\b/i,min:4,m:'I visited it last summer.'},
+{k:'open',q:'My favorite thing',h:'Example: My favorite sport is basketball.',min:4,m:'My favorite food is pizza.'},
+{k:'open',q:'A comparison',h:'Example: My dog is faster than my cat!',re:/than/i,min:4,m:'My brother is taller than me.'},
+{k:'open',q:'My opinion (I think… because…)',h:'Example: I think basketball is exciting because it is fast.',re:/because/i,min:5,m:'I think English is useful because I can travel.'}]},
+{id:'F',c:'#0fb5c9',t:'Answer the questions',ar:'و. أجب عن الأسئلة',fr:'Réponds aux questions',tip:'Answer with a full sentence.',q:[
+{k:'open',q:'Have you ever tried something new this year?',h:'هل جربت شيئًا جديدًا هذا العام؟ • As-tu déjà essayé quelque chose de nouveau cette année ?',min:3,m:'Yes, I have. I have tried swimming.'},
+{k:'open',q:'What’s the best thing you’ve done this year?',h:'ما أفضل شيء فعلته هذا العام؟ • Quelle est la meilleure chose que tu aies faite cette année ?',min:3,m:'The best thing I’ve done is learning English.'},
+{k:'open',q:'What do you prefer: sports or movies? Why?',h:'ماذا تفضل: الرياضة أم الأفلام؟ • Que préfères-tu : le sport ou les films ?',re:/because/i,min:4,m:'I prefer sports because they are fun.'},
+{k:'open',q:'What is the most interesting place you have visited?',h:'ما هو أكثر مكان مثير للاهتمام زرته؟ • Quel est l’endroit le plus intéressant que tu aies visité ?',min:4,m:'The most interesting place I have visited is Oran.'},
+{k:'open',q:'Which do you prefer: summer or winter? Why?',h:'أيهما تفضل: الصيف أم الشتاء؟ • Que préfères-tu : l’été ou l’hiver ?',re:/because/i,min:4,m:'I prefer summer because it is sunny.'}]}
+];
+var EXP={
+'0_0':"الجملة فيها زمن محدد (last summer) ← نستعمل الماضي البسيط: visited.",
+'0_1':"never مع تجربة في الحياة بدون وقت محدد ← الحاضر التام: has never tried (has مع she).",
+'0_2':"three times تجربة بدون وقت محدد ← الحاضر التام: have seen (have مع we).",
+'0_3':"in 2019 زمن محدد ← الماضي البسيط: climbed.",
+'0_4':"yesterday زمن محدد ← الماضي البسيط، و eat فعل شاذ: ate.",
+'1_0':"big صفة قصيرة: نضاعف الحرف الأخير ونضيف er ← bigger، ثم نكتب than.",
+'1_1':"fast صفة قصيرة: نضيف er ← faster than.",
+'1_2':"big صفة قصيرة ← bigger than (نضاعف الحرف g).",
+'1_3':"hot صفة قصيرة ← hotter than (نضاعف الحرف t).",
+'1_4':"expensive صفة طويلة: نضع more قبلها ← more expensive than.",
+'3_0':"three times تجربة بدون وقت محدد ← الحاضر التام: have visited.",
+'3_1':"last year وقت محدد ← الماضي البسيط: visited.",
+'3_2':"مع she نستعمل has في الحاضر التام: has never eaten.",
+'3_3':"yesterday وقت محدد ← الماضي البسيط: saw.",
+'3_4':"ever تسأل عن التجربة ← Have you ever + اسم المفعول (climbed).",
+'4_0':"استعمل have / has + اسم المفعول (past participle)، مثل: have visited.",
+'4_1':"استعمل الماضي البسيط مع وقت محدد مثل last summer أو yesterday.",
+'4_2':"اكتب جملة كاملة (4 كلمات على الأقل)، مثل: My favorite … is …",
+'4_3':"استعمل صفة المقارنة + than، مثل: faster than.",
+'4_4':"ابدأ بـ I think ثم اذكر السبب بعد because.",
+'5_0':"أجب بجملة كاملة بالحاضر التام: Yes, I have. / No, I haven’t.",
+'5_1':"استعمل الحاضر التام: The best thing I’ve done is …",
+'5_2':"اذكر اختيارك ثم السبب بعد because: I prefer … because …",
+'5_3':"استعمل the most + صفة: The most interesting place I have visited is …",
+'5_4':"اذكر اختيارك ثم السبب بعد because: I prefer … because …"
+};
+var S={},cur=0,name='';
+function $(i){return document.getElementById(i)}
+function norm(s){return s.toLowerCase().replace(/[’]/g,"'").replace(/[.!?]+$/,'').replace(/\s+/g,' ').trim()}
+function words(s){return s.trim().split(/\s+/).filter(Boolean).length}
+function fillText(q,vals){var i=0;return q.q.replace(/___/g,function(){return vals[i++]||'___'})}
+function build(){
+ var tb='',pn='';
+ T.forEach(function(t,ti){
+  tb+='<button id="tb'+ti+'" onclick="go('+ti+')" style="background:">'+t.id+'</button>';
+  var h='<div class="pane" id="p'+ti+'" style="--c:'+t.c+'"><h2>Task '+t.id+' – '+t.t+'</h2><p class="ar">'+t.ar+'</p><p class="fr">'+t.fr+'</p><div class="tip">💡 '+t.tip+'</div>';
+  t.q.forEach(function(q,qi){
+   var id=ti+'_'+qi,body='';
+   if(q.k=='fill'||q.k=='blank'){var n=0;body=q.q.replace(/___/g,function(){return '<input type="text" data-i="'+(n++)+'" autocomplete="off">'})}
+   else if(q.k=='mc'){body=q.q.replace('___','_____')+'<div class="opts">'+q.o.map(function(o,oi){return '<button class="opt" data-o="'+oi+'" onclick="pick(\''+id+'\','+oi+')">'+String.fromCharCode(97+oi)+') '+o+'</button>'}).join('')+'</div>'}
+   else{body=q.q+(q.h?'<div class="sub">'+q.h+'</div>':'')+'<input type="text" class="w" autocomplete="off">'}
+   h+='<div class="qc" id="q'+id+'"><div class="qt"><span class="n">'+(qi+1)+'</span>'+body+'</div><button class="chk" onclick="chk('+ti+','+qi+')">Check ✔</button><div class="fb"></div></div>';
+  });
+  h+='<div class="nav"><button onclick="go('+(ti-1)+')" '+(ti?'':'disabled')+'>⬅ Back</button><button onclick="go('+(ti+1)+')">'+(ti==T.length-1?'Results 🏁':'Next ➡')+'</button></div></div>';
+  pn+=h;
+ });
+ tb+='<button id="tb'+T.length+'" onclick="go('+T.length+')">🏁</button>';
+ pn+='<div class="pane" id="p'+T.length+'" style="--c:#2f7bff"><h2 style="text-align:center">Your Results 🎉</h2><div class="big" id="sc"></div><div id="rows"></div><div class="acts"><button class="m" onclick="mail()">📧 Send to my teacher</button><button class="g" onclick="cp()">📋 Copy my answers</button></div><p class="sub" id="note" style="text-align:center;margin-top:10px"></p><div class="nav"><button onclick="go('+(T.length-1)+')">⬅ Back</button><span></span></div></div>';
+ $('tabs').innerHTML=tb;$('panes').innerHTML=pn;
+}
+function pick(id,o){var qc=$('q'+id);if(qc.classList.contains('ok')||qc.classList.contains('bad'))return;qc.dataset.sel=o;qc.querySelectorAll('.opt').forEach(function(b){b.classList.toggle('sel',b.dataset.o==o)})}
+function chk(ti,qi){
+ var id=ti+'_'+qi,qc=$('q'+id),q=T[ti].q[qi],fb=qc.querySelector('.fb');
+ if(S[id])return;
+ var ins=[].slice.call(qc.querySelectorAll('input')),v=ins.map(function(i){return i.value.trim()}),ok=false,ans='';
+ if(q.k=='mc'){if(qc.dataset.sel===undefined){fb.textContent='👆 Tap an answer first.';return}
+  var s=+qc.dataset.sel;ok=s==q.ok;ans=q.q.replace('___',q.o[s])}
+ else{if(v.some(function(x){return !x})){fb.textContent='✍️ Write your answer first.';return}
+  if(q.k=='fill'){ok=q.ok.indexOf(norm(v[0]))>-1;ans=fillText(q,v)}
+  else if(q.k=='blank'){ok=true;ans=fillText(q,v)}
+  else if(q.k=='sent'){ok=words(v[0])>=4&&q.re.test(v[0]);ans=v[0]}
+  else{ok=words(v[0])>=q.min&&(!q.re||q.re.test(v[0]));ans=v[0]}}
+ S[id]={ok:ok,a:ans};
+ ins.forEach(function(i){i.disabled=true});qc.querySelectorAll('.opt').forEach(function(b){b.disabled=true});
+ qc.querySelector('.chk').disabled=true;qc.classList.add(ok?'ok':'bad');
+ fb.innerHTML=ok?'<span style="color:var(--ok)">✅ Correct! Well done! 🎉</span>':'<span style="color:var(--bad)">❌ Not correct.</span><span class="fix">✔ '+(q.k=='open'||q.k=='sent'?'Model answer: ':'Correct version: ')+q.m+'</span>'+(EXP[id]?'<span class="exp">💡 '+EXP[id]+'</span>':'');
+ prog();
+}
+function prog(){
+ var d=Object.keys(S).length,tot=0;T.forEach(function(t){tot+=t.q.length});
+ $('pb').style.width=(d/tot*100)+'%';
+ T.forEach(function(t,ti){var all=t.q.every(function(_,qi){return S[ti+'_'+qi]});$('tb'+ti).classList.toggle('done',all)});
+}
+function go(n){
+ if(n<0)return;cur=n;
+ for(var i=0;i<=T.length;i++){$('p'+i).classList.toggle('on',i==n);$('tb'+i).classList.toggle('on',i==n);var t=T[i];if(t)$('tb'+i).style.background=i==n?t.c:''}
+ if(n==T.length)results();window.scrollTo(0,0);
+}
+function results(){
+ var sc=0,tot=0,rows='';
+ T.forEach(function(t,ti){var s=0;t.q.forEach(function(_,qi){tot++;if(S[ti+'_'+qi]&&S[ti+'_'+qi].ok){s++;sc++}});rows+='<div class="row"><span>Task '+t.id+' – '+t.t+'</span><b>'+s+' / '+t.q.length+'</b></div>'});
+ $('sc').textContent=sc+' / '+tot+(sc==tot?' 🏆':sc>=tot*.7?' ⭐':' 💪');$('rows').innerHTML=rows;
+ var left=tot-Object.keys(S).length;$('note').textContent=left?('⚠️ '+left+' question(s) not answered yet — go back and check them.'):'All done! Now send your answers to your teacher.';
+ if(sc>=tot*.7)fall();
+}
+function fall(){['🎉','⭐','🌟','🎊','✨'].forEach(function(e,i){for(var k=0;k<3;k++){var f=document.createElement('div');f.className='fl';f.textContent=e;f.style.left=(Math.random()*92)+'%';f.style.animationDelay=(Math.random()*1.5)+'s';document.body.appendChild(f);setTimeout(function(x){x.remove()},5000,f)}})}
+function report(){
+ var sc=0,tot=0,L=[];
+ T.forEach(function(t,ti){L.push('');L.push('Task '+t.id+' – '+t.t);t.q.forEach(function(_,qi){tot++;var s=S[ti+'_'+qi];if(s&&s.ok)sc++;L.push(t.id+(qi+1)+'. '+(s?s.a+(s.ok?'  ✔':'  ✘'):'(no answer)'))})});
+ return 'Session 8 · Practice Pack\nName: '+name+'\nScore: '+sc+' / '+tot+'\n'+L.join('\n');
+}
+function mail(){location.href='mailto:'+MAIL+'?subject='+encodeURIComponent('Session 8 Practice Pack – '+name)+'&body='+encodeURIComponent(report())}
+function cp(){var r=report();if(navigator.clipboard){navigator.clipboard.writeText(r).then(function(){$('note').textContent='📋 Copied! You can paste it in an email to '+MAIL},function(){$('note').textContent='Copy failed. Use the email button.'})}else{$('note').textContent='Copy not available. Use the email button.'}}
+$('go').onclick=function(){var v=$('nm').value.trim();if(!v){$('nmerr').textContent='✍️ Please write your name first.';return}
+ name=v;$('who').textContent=v;$('start').style.display='none';build();go(0);prog()};
+$('nm').addEventListener('keydown',function(e){if(e.key==='Enter')$('go').click()});
+</script>
+</body>
+</html>
