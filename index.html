@@ -67,6 +67,10 @@ button:active{transform:scale(.94)}button:disabled{opacity:.45;cursor:default}
 </div>
 <script>
 var MAIL='ikram.boudaoud25@gmail.com';
+var W3F_KEY='69974b46-e8e3-4c3d-b9b1-9d5c67959a29';
+var W3F_URL='https://api.web3forms.com/submit';
+var LSKEY='mylife_s8_v1';
+var sent=false;
 var T=[
 {id:'A',c:'#2f7bff',t:'Fill in the blanks',ar:'أ. املأ الفراغات (الحاضر التام أو الماضي البسيط)',fr:'Complète les blancs (present perfect ou past simple)',tip:'Present Perfect = no exact time · Past Simple = specific time.',q:[
 {k:'fill',q:'I ___ (visit) Paris last summer.',ok:['visited'],m:'I visited Paris last summer.'},
@@ -172,7 +176,7 @@ function chk(ti,qi){
  ins.forEach(function(i){i.disabled=true});qc.querySelectorAll('.opt').forEach(function(b){b.disabled=true});
  qc.querySelector('.chk').disabled=true;qc.classList.add(ok?'ok':'bad');
  fb.innerHTML=ok?'<span style="color:var(--ok)">✅ Correct! Well done! 🎉</span>':'<span style="color:var(--bad)">❌ Not correct.</span><span class="fix">✔ '+(q.k=='open'||q.k=='sent'?'Model answer: ':'Correct version: ')+q.m+'</span>'+(EXP[id]?'<span class="exp">💡 '+EXP[id]+'</span>':'');
- prog();
+ prog();save();
 }
 function prog(){
  var d=Object.keys(S).length,tot=0;T.forEach(function(t){tot+=t.q.length});
@@ -180,7 +184,7 @@ function prog(){
  T.forEach(function(t,ti){var all=t.q.every(function(_,qi){return S[ti+'_'+qi]});$('tb'+ti).classList.toggle('done',all)});
 }
 function go(n){
- if(n<0)return;cur=n;
+ if(n<0)return;cur=n;save();
  for(var i=0;i<=T.length;i++){$('p'+i).classList.toggle('on',i==n);$('tb'+i).classList.toggle('on',i==n);var t=T[i];if(t)$('tb'+i).style.background=i==n?t.c:''}
  if(n==T.length)results();window.scrollTo(0,0);
 }
@@ -188,8 +192,12 @@ function results(){
  var sc=0,tot=0,rows='';
  T.forEach(function(t,ti){var s=0;t.q.forEach(function(_,qi){tot++;if(S[ti+'_'+qi]&&S[ti+'_'+qi].ok){s++;sc++}});rows+='<div class="row"><span>Task '+t.id+' – '+t.t+'</span><b>'+s+' / '+t.q.length+'</b></div>'});
  $('sc').textContent=sc+' / '+tot+(sc==tot?' 🏆':sc>=tot*.7?' ⭐':' 💪');$('rows').innerHTML=rows;
- var left=tot-Object.keys(S).length;$('note').textContent=left?('⚠️ '+left+' question(s) not answered yet — go back and check them.'):'All done! Now send your answers to your teacher.';
+ var left=tot-Object.keys(S).length;
+ if(left){$('note').textContent='⚠️ '+left+' question(s) not answered yet — go back and check them.';}
+ else if(sent){$('note').textContent='✅ All done! Your answers were sent to your teacher.';}
+ else{$('note').textContent='All done! Sending your answers to your teacher…';}
  if(sc>=tot*.7)fall();
+ if(left===0&&!sent)send();
 }
 function fall(){['🎉','⭐','🌟','🎊','✨'].forEach(function(e,i){for(var k=0;k<3;k++){var f=document.createElement('div');f.className='fl';f.textContent=e;f.style.left=(Math.random()*92)+'%';f.style.animationDelay=(Math.random()*1.5)+'s';document.body.appendChild(f);setTimeout(function(x){x.remove()},5000,f)}})}
 function report(){
@@ -197,11 +205,22 @@ function report(){
  T.forEach(function(t,ti){L.push('');L.push('Task '+t.id+' – '+t.t);t.q.forEach(function(_,qi){tot++;var s=S[ti+'_'+qi];if(s&&s.ok)sc++;L.push(t.id+(qi+1)+'. '+(s?s.a+(s.ok?'  ✔':'  ✘'):'(no answer)'))})});
  return 'Session 8 · Practice Pack\nName: '+name+'\nScore: '+sc+' / '+tot+'\n'+L.join('\n');
 }
-function mail(){location.href='mailto:'+MAIL+'?subject='+encodeURIComponent('Session 8 Practice Pack – '+name)+'&body='+encodeURIComponent(report())}
+function mail(){send()}
+function send(){
+ var r=report();
+ $('note').textContent='📤 Sending your answers…';
+ fetch(W3F_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({access_key:W3F_KEY,subject:'Session 8 Practice Pack – '+name,from_name:name,message:r})})
+ .then(function(res){return res.json()})
+ .then(function(d){if(d&&d.success){sent=true;save();$('note').textContent='✅ Your answers were sent to your teacher!';}else{$('note').textContent='⚠️ Sending failed — tap “📧 Send to my teacher” to retry, or use 📋.';}})
+ .catch(function(){$('note').textContent='⚠️ No internet. Your answers are saved — tap “📧 Send to my teacher” again later.';});
+}
+function save(){try{localStorage.setItem(LSKEY,JSON.stringify({name:name,cur:cur,S:S,sent:sent}))}catch(e){}}
+function load(){try{var d=localStorage.getItem(LSKEY);if(d){var o=JSON.parse(d);if(o&&o.S)return o}}catch(e){}return null}
 function cp(){var r=report();if(navigator.clipboard){navigator.clipboard.writeText(r).then(function(){$('note').textContent='📋 Copied! You can paste it in an email to '+MAIL},function(){$('note').textContent='Copy failed. Use the email button.'})}else{$('note').textContent='Copy not available. Use the email button.'}}
 $('go').onclick=function(){var v=$('nm').value.trim();if(!v){$('nmerr').textContent='✍️ Please write your name first.';return}
- name=v;$('who').textContent=v;$('start').style.display='none';build();go(0);prog()};
+ name=v;$('who').textContent=v;$('start').style.display='none';build();save();go(0);prog()};
 $('nm').addEventListener('keydown',function(e){if(e.key==='Enter')$('go').click()});
+(function(){var o=load();if(o){name=o.name||'';S=o.S||{};sent=!!o.sent;$('who').textContent=name;$('start').style.display='none';build();cur=(typeof o.cur==='number')?o.cur:0;go(cur);prog();}})();
 </script>
 </body>
 </html>
