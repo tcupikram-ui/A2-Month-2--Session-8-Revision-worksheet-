@@ -157,7 +157,7 @@ function build(){
   pn+=h;
  });
  tb+='<button id="tb'+T.length+'" onclick="go('+T.length+')">🏁</button>';
- pn+='<div class="pane" id="p'+T.length+'" style="--c:#2f7bff"><h2 style="text-align:center">Your Results 🎉</h2><div class="big" id="sc"></div><div id="rows"></div><div class="acts"><button class="m" onclick="mail()">📧 Send to my teacher</button><button class="g" onclick="cp()">📋 Copy my answers</button></div><p class="sub" id="note" style="text-align:center;margin-top:10px"></p><div class="nav"><button onclick="go('+(T.length-1)+')">⬅ Back</button><span></span></div></div>';
+ pn+='<div class="pane" id="p'+T.length+'" style="--c:#2f7bff"><h2 style="text-align:center">Your Results 🎉</h2><div class="big" id="sc"></div><div id="rows"></div><div class="acts"><button class="m" onclick="mail()">📧 Send to my teacher</button><button class="g" onclick="printAns()">🖨️ Print my answers</button></div><p class="sub" id="note" style="text-align:center;margin-top:10px"></p><div class="nav"><button onclick="go('+(T.length-1)+')">⬅ Back</button><span></span></div></div>';
  $('tabs').innerHTML=tb;$('panes').innerHTML=pn;
 }
 function pick(id,o){var qc=$('q'+id);if(qc.classList.contains('ok')||qc.classList.contains('bad'))return;qc.dataset.sel=o;qc.querySelectorAll('.opt').forEach(function(b){b.classList.toggle('sel',b.dataset.o==o)})}
@@ -216,7 +216,13 @@ function send(){
 }
 function save(){try{localStorage.setItem(LSKEY,JSON.stringify({name:name,cur:cur,S:S,sent:sent}))}catch(e){}}
 function load(){try{var d=localStorage.getItem(LSKEY);if(d){var o=JSON.parse(d);if(o&&o.S)return o}}catch(e){}return null}
-function cp(){var r=report();if(navigator.clipboard){navigator.clipboard.writeText(r).then(function(){$('note').textContent='📋 Copied! You can paste it in an email to '+MAIL},function(){$('note').textContent='Copy failed. Use the email button.'})}else{$('note').textContent='Copy not available. Use the email button.'}}
+function printAns(){
+ var r=report();
+ var w=window.open('','_blank');
+ if(!w){$('note').textContent='⚠️ Pop-up blocked — allow pop-ups and try again.';return}
+ w.document.write('<html><head><title>Session 8 · '+name+'</title><style>body{font-family:Arial,sans-serif;padding:24px;line-height:1.5}pre{white-space:pre-wrap;font:inherit}</style></head><body><h2>Session 8 · Practice Pack</h2><pre>'+r.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</pre></body></html>');
+ w.document.close();w.focus();w.print();
+}
 $('go').onclick=function(){var v=$('nm').value.trim();if(!v){$('nmerr').textContent='✍️ Please write your name first.';return}
  name=v;$('who').textContent=v;$('start').style.display='none';build();save();go(0);prog()};
 $('nm').addEventListener('keydown',function(e){if(e.key==='Enter')$('go').click()});
